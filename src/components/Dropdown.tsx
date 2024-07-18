@@ -15,7 +15,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   onChange,
 }) => {
   return (
-    <select onChange={onChange} value={value}>
+    <select className="px-4 py-2" onChange={onChange} value={value}>
       <option value="" disabled>
         {placeholder}
       </option>
