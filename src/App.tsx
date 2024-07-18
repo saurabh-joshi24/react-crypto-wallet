@@ -1,11 +1,10 @@
 import './App.css';
+import Wallet from './pages/Wallet';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>This is react app</h1>
-      </header>
+      <Wallet/>
     </div>
   );
 }
