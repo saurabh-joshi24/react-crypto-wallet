@@ -4,7 +4,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <header className="flex flex-column items-center justify-center text-dark">
+    <header className="flex flex-col mb-3 items-center justify-center text-dark text-4xl text-bold">
       <h1>{title || "This is header"}</h1>
     </header>
   );
