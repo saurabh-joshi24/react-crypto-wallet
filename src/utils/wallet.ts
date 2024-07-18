@@ -1,15 +1,15 @@
 import { ethers } from "ethers";
 
-interface walletArgs {
+export interface walletArgs {
   account: string;
-  balance: string | number;
+  balance: string;
   network: string;
 }
 
 interface transferArgs {
-  account: string;
+  account: string | null;
   recipientAddress: string;
-  amount: string | number;
+  amount: string;
   onSuccess?: () => void;
   onFailure?: () => void;
 }
