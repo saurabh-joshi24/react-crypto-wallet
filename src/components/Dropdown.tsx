@@ -1,0 +1,32 @@
+interface DropdownProps {
+  placeholder?: string;
+  value: string | number;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: Array<{
+    value: string | number;
+    label: string;
+  }>;
+}
+
+const Dropdown: React.FC<DropdownProps> = ({
+  value,
+  options = [],
+  placeholder = "placeholder text",
+  onChange,
+}) => {
+  return (
+    <select onChange={onChange} value={value}>
+      <option value="" disabled>
+        {placeholder}
+      </option>
+
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+export default Dropdown;
