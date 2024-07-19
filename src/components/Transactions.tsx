@@ -11,8 +11,8 @@ interface transactionProps {
 
 const Transactions: React.FC<transactionProps> = ({ address, limit = 10 }) => {
   const { data, isError, isPending, isSuccess } = useQuery({
-    queryKey: ["todos", address],
-    queryFn: () => fetchTransactions(address),
+    queryKey: ["transactions", address],
+    queryFn: () => fetchTransactions(address) 
   });
 
   if (isPending) return <div> Loading Transactions ...</div>;
