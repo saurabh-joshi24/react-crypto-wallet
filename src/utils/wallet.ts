@@ -71,4 +71,23 @@ const handleTransfer = async (transferArgs: transferArgs) => {
   }
 };
 
-export { handleTransfer, connectWallet };
+const checkWalletConnection = async (callback: (value: boolean) => void) => {
+  if (window.ethereum) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    try {
+      // Check if signer is connected and has an address
+      await signer.getAddress();
+      callback(true);
+    } catch (error) {
+      console.error('Error checking wallet connection:', error);
+      callback(false);
+    }
+  } else {
+    console.error('MetaMask not found');
+    callback(false)
+  }
+};
+
+export { handleTransfer, connectWallet, checkWalletConnection };
