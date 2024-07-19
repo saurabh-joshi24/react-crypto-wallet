@@ -1,26 +1,52 @@
-import React, { useState } from "react";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Dropdown from "../components/Dropdown";
 import AccountInfo from "../components/AccountInfo";
-import { walletArgs, connectWallet, handleTransfer } from "../utils/wallet";
-import { TOKENS } from "../constants/token";
 import Transactions from "../components/Transactions";
+import {
+  walletArgs,
+  connectWallet,
+  handleTransfer,
+  checkWalletConnection,
+} from "../utils/wallet";
+import { TOKENS } from "../constants/token";
+import { useWalletContext } from "../hooks/wallet";
+import { useEffect } from "react";
 
 const Wallet: React.FC = () => {
-  const [account, setAccount] = useState<string | null>(null);
-  const [balance, setBalance] = useState<string>("0");
-  const [network, setNetwork] = useState<string | null>(null);
-  const [amount, setAmount] = useState<string>("");
-  const [recipientAddress, setRecipientAddress] = useState<string>("");
-  const [token, setToken] = useState<string>("");
+  const {
+    account,
+    setAccount,
+    balance,
+    setBalance,
+    network,
+    setNetwork,
+    amount,
+    setAmount,
+    recipientAddress,
+    setRecipientAddress,
+    token,
+    setToken,
+    connected,
+    setConnected,
+  } = useWalletContext();
 
   const onWalletConnect = ({ account, balance, network }: walletArgs) => {
     setAccount(account);
     setBalance(balance);
     setNetwork(network);
   };
+
+  useEffect(() => {
+    // Check if wallet is already connected on initial loading if yes then connect
+    checkWalletConnection(async (isConnected) => {
+      setConnected(isConnected);
+      if (isConnected) {
+        handleWalletConnection();
+      }
+    });
+  }, []);
 
   const handleWalletConnection = async () => {
     await connectWallet({ method: "eth_requestAccounts", onWalletConnect });
@@ -40,7 +66,7 @@ const Wallet: React.FC = () => {
     <div>
       <Header title="React Wallet App" />
       <div className="mt-4 flex flex-col justify-center items-center">
-        {!account ? (
+        {!account && !connected ? (
           <Button text="Connect Wallet" onClick={handleWalletConnection} />
         ) : (
           <div>
@@ -66,7 +92,7 @@ const Wallet: React.FC = () => {
               placeholder="Select Token"
             />
             <Button text="Send Token" onClick={handleTokenTransfer} />
-            <Transactions address={account}/>
+            <Transactions address={account} />
           </div>
         )}
       </div>
