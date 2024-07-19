@@ -6,6 +6,7 @@ import Dropdown from "../components/Dropdown";
 import AccountInfo from "../components/AccountInfo";
 import { walletArgs, connectWallet, handleTransfer } from "../utils/wallet";
 import { TOKENS } from "../constants/token";
+import Transactions from "../components/Transactions";
 
 const Wallet: React.FC = () => {
   const [account, setAccount] = useState<string | null>(null);
@@ -65,6 +66,7 @@ const Wallet: React.FC = () => {
               placeholder="Select Token"
             />
             <Button text="Send Token" onClick={handleTokenTransfer} />
+            <Transactions address={account}/>
           </div>
         )}
       </div>
