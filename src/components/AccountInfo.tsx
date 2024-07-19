@@ -1,5 +1,5 @@
 interface accountInfoProps {
-  account: string;
+  account: string | null;
   balance: string;
   network: string | null;
 }
