@@ -1,11 +1,14 @@
-import './App.css';
-import Wallet from './pages/Wallet';
+import "./App.css";
+import Wallet from "./pages/Wallet";
+import { WalletProvider } from "./context/Wallet";
 
 function App() {
   return (
-    <div className="App">
-      <Wallet/>
-    </div>
+    <WalletProvider>
+      <div className="App">
+        <Wallet />
+      </div>
+    </WalletProvider>
   );
 }
 
