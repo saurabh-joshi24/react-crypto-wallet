@@ -1,4 +1,4 @@
-const fetchTransactions = async (address: string) => {
+const fetchTransactions = async (address: string | null) => {
   try {
     const API_URL = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
     const response = await fetch(API_URL);
