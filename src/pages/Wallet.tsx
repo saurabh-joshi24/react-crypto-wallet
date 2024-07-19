@@ -1,18 +1,16 @@
+import { useEffect } from "react";
 import Header from "../components/Header";
 import Button from "../components/Button";
-import Input from "../components/Input";
-import Dropdown from "../components/Dropdown";
 import AccountInfo from "../components/AccountInfo";
 import Transactions from "../components/Transactions";
+import TokenTransferPanel from "../components/TokenTransferPanel";
 import {
   walletArgs,
   connectWallet,
   handleTransfer,
   checkWalletConnection,
 } from "../utils/wallet";
-import { TOKENS } from "../constants/token";
 import { useWalletContext } from "../hooks/wallet";
-import { useEffect } from "react";
 
 const Wallet: React.FC = () => {
   const {
@@ -23,11 +21,7 @@ const Wallet: React.FC = () => {
     network,
     setNetwork,
     amount,
-    setAmount,
     recipientAddress,
-    setRecipientAddress,
-    token,
-    setToken,
     connected,
     setConnected,
   } = useWalletContext();
@@ -75,23 +69,7 @@ const Wallet: React.FC = () => {
               balance={balance}
               network={network}
             />
-            <Input
-              placeholder="Amount to send"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <Input
-              placeholder="Recipient Address"
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-            />
-            <Dropdown
-              options={TOKENS}
-              onChange={(e) => setToken(e.target.value)}
-              value={token}
-              placeholder="Select Token"
-            />
-            <Button text="Send Token" onClick={handleTokenTransfer} />
+            <TokenTransferPanel handleTokenTransfer={handleTokenTransfer} />
             <Transactions address={account} />
           </div>
         )}
