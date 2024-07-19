@@ -5,8 +5,7 @@ import Input from "../components/Input";
 import Dropdown from "../components/Dropdown";
 import AccountInfo from "../components/AccountInfo";
 import { walletArgs, connectWallet, handleTransfer } from "../utils/wallet";
-
-const TOKENS = [{ value: "ETH", label: "ETH" }];
+import { TOKENS } from "../contants/token";
 
 const Wallet: React.FC = () => {
   const [account, setAccount] = useState<string | null>(null);
