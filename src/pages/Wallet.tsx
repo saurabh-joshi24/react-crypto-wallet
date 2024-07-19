@@ -11,6 +11,7 @@ import {
   checkWalletConnection,
 } from "../utils/wallet";
 import { useWalletContext } from "../hooks/wallet";
+import { ethers } from "ethers";
 
 const Wallet: React.FC = () => {
   const {
@@ -40,10 +41,46 @@ const Wallet: React.FC = () => {
         handleWalletConnection();
       }
     });
+    return () => {
+      // Remove listeners
+      if (window.ethereum) {
+        window.ethereum.removeAllListeners("accountsChanged");
+        window.ethereum.removeAllListeners("chainChanged");
+      }
+    };
   }, []);
 
+  const handleAccountsChanged = async (accounts: Array<any>) => {
+    if (window.ethereum) {
+      setAccount(accounts[0]);
+      //@ts-ignore
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      //@ts-ignore
+      const balance = await provider.getBalance(accounts[0]);
+      setBalance(ethers.utils.formatEther(balance));
+    }
+  };
+
+  const handleChainChanged = async () => {
+    if (window.ethereum) {
+      //@ts-ignore
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      //@ts-ignore
+      const network = await provider.getNetwork();
+      const accounts = await provider.listAccounts();
+      const balance = await provider.getBalance(accounts[0]);
+      setBalance(ethers.utils.formatEther(balance));
+      setNetwork(network.name);
+    }
+  };
+
   const handleWalletConnection = async () => {
-    await connectWallet({ method: "eth_requestAccounts", onWalletConnect });
+    await connectWallet({
+      method: "eth_requestAccounts",
+      onWalletConnect,
+      handleAccountsChanged,
+      handleChainChanged,
+    });
   };
 
   const handleTokenTransfer = async () => {
@@ -70,7 +107,7 @@ const Wallet: React.FC = () => {
               network={network}
             />
             <TokenTransferPanel handleTokenTransfer={handleTokenTransfer} />
-            <Transactions address={account} />
+            {account && <Transactions address={account} />}
           </div>
         )}
       </div>
