@@ -51,13 +51,15 @@ const Wallet: React.FC = () => {
   }, []);
 
   const handleAccountsChanged = async (accounts: Array<any>) => {
-    if (window.ethereum) {
+    if (window.ethereum && accounts.length) {
       setAccount(accounts[0]);
       //@ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       //@ts-ignore
       const balance = await provider.getBalance(accounts[0]);
       setBalance(ethers.utils.formatEther(balance));
+    } else {
+      window.location.reload()
     }
   };
 
