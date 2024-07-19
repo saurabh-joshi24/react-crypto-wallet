@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import fetchTransactions from "../api/transactions";
 
 interface transactionProps {
-  address: string;
+  address: string |  null;
   limit?: number;
 }
 
