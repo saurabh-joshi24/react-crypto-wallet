@@ -19,15 +19,16 @@ type onWalletConnect = (walletArgs: walletArgs) => void;
 interface connectWalletArgs {
   method: string;
   onWalletConnect: onWalletConnect;
+  handleChainChanged: (value: string) => void;
+  handleAccountsChanged: (value: Array<any>) => void;
 }
-
-
 
 const connectWallet = async ({
   method,
   onWalletConnect,
+  handleChainChanged,
+  handleAccountsChanged,
 }: connectWalletArgs) => {
-
   if (window && window.ethereum) {
     // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -36,6 +37,12 @@ const connectWallet = async ({
     const accounts = await provider.listAccounts();
     const balance = await provider.getBalance(accounts[0]);
     const network = await provider.getNetwork();
+    //@ts-ignore
+    // Listen for network changes
+    window.ethereum.on("chainChanged", handleChainChanged);
+    //@ts-ignore
+    // Listen for account changes
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
     // @ts-ignore
     onWalletConnect({
       account: accounts[0],
@@ -75,18 +82,17 @@ const checkWalletConnection = async (callback: (value: boolean) => void) => {
   if (window.ethereum) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-
     try {
       // Check if signer is connected and has an address
       await signer.getAddress();
       callback(true);
     } catch (error) {
-      console.error('Error checking wallet connection:', error);
+      console.error("Error checking wallet connection:", error);
       callback(false);
     }
   } else {
-    console.error('MetaMask not found');
-    callback(false)
+    console.error("MetaMask not found");
+    callback(false);
   }
 };
 
