@@ -2,12 +2,14 @@ interface accountInfoProps {
   account: string | null;
   balance: string;
   network: string | null;
+  tokenSymbol: string | null;
 }
 
 const AccountInfo: React.FC<accountInfoProps> = ({
   account,
   balance,
   network,
+  tokenSymbol
 }) => {
   return (
     <>
@@ -15,7 +17,7 @@ const AccountInfo: React.FC<accountInfoProps> = ({
         <b>Account:</b> {account}
       </p>
       <p className="my-2">
-        <b>Balance:</b> {balance} ETH
+        <b>Balance:</b> {balance}{" "}{tokenSymbol || "ETH"} 
       </p>
       <p className="my-2">
         <b>Network:</b> {network}
