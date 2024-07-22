@@ -3,8 +3,7 @@ interface DropdownProps {
   value: string | number;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   options: Array<{
-    value: string | number;
-    label: string;
+    [key: string]: any;
   }>;
 }
 
