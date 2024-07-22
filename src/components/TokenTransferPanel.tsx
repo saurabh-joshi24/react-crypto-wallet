@@ -6,6 +6,7 @@ import { fetchTokens } from "../api/tokens";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { getTokenBalance } from "../utils/token";
+import { getAccountBalance } from "../utils/wallet";
 
 interface TokenTransferPanelProps {
   address: string | null;
@@ -21,6 +22,7 @@ const TokenTransferPanel: React.FC<TokenTransferPanelProps> = ({
     setAmount,
     recipientAddress,
     setRecipientAddress,
+    account,
     selectedToken,
     setSelectedToken,
     setBalance,
@@ -56,35 +58,34 @@ const TokenTransferPanel: React.FC<TokenTransferPanelProps> = ({
   if (isError) return <div> Unable to fetch tokens</div>;
 
   const onButtonClick = () => {
-    const tokenSelected = memoizedTokens.find(
-      (item) => item.value === selectedToken
-    );
-    // if selected token is erc20 contract
-    if (
-      tokenSelected &&
-      Object.keys(tokenSelected).length &&
-      tokenSelected.type === "contract"
-    ) {
-      const { type } = tokenSelected;
-      handleTokenTransfer(selectedToken, type);
-    } else {
+    // if selected token is not erc20 contract
+    if (selectedToken === account) {
       handleTokenTransfer(selectedToken);
+    } else {
+      //@ts-ignore
+      const tokenSelected = memoizedTokens.find(
+        (item) => item.value === selectedToken && item.type === "contract"
+      );
+      if (tokenSelected && tokenSelected.type) {
+        handleTokenTransfer(selectedToken, tokenSelected.type);
+      }
     }
   };
 
   const onDropdownChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    let tokenBalance;
     const value = event.target.value;
-    const tokenSelected = memoizedTokens.find((item) => item.value === value);
-
     setSelectedToken(value);
-
-    if (tokenSelected && Object.keys(tokenSelected).length) {
+    // if selected token is not erc20 contract token
+    if (value !== account) {
       //@ts-ignore
-      const tokenBalance = await getTokenBalance(value, address);
-      setBalance(String(tokenBalance));
+      tokenBalance = await getTokenBalance(value, address);
+    } else {
+      tokenBalance = await getAccountBalance();
     }
+    setBalance(String(tokenBalance));
   };
 
   return (
