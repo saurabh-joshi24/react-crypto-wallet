@@ -8,7 +8,7 @@ interface tokenTransferArgs {
 }
 
 export const handleERC20TokenTransfer = async ({
-  tokenAddress ,
+  tokenAddress,
   receiverAddress,
   amount,
 }: tokenTransferArgs) => {
@@ -35,5 +35,26 @@ export const handleERC20TokenTransfer = async ({
     }
   } catch (error) {
     console.error("Error transferring tokens:", error);
+  }
+};
+
+export const getTokenBalance = async(contractAddress: string, accountAddress: string) => {
+  try {
+    if (window.ethereum) {
+      //@ts-ignore
+      const web3 = new Web3(window.ethereum); // Initialize Web3 with MetaMask provider
+      const tokenContract = new web3.eth.Contract(TOKENABI, contractAddress); // ERC20 token contract instance
+      const balance = await tokenContract.methods.balanceOf(accountAddress).call();
+      const decimals = await tokenContract.methods.decimals().call();
+      
+      if (balance) {
+          return Number(balance)/ 10 ** Number(decimals);
+      } else {
+         throw new Error("Unable to fetch balance");
+      }
+    }
+  } catch (error) {
+    console.error("Error transferring tokens:", error);
+    return "";
   }
 };
