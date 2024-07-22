@@ -12,7 +12,7 @@ interface DataTableProps {
 
 const DataTable: React.FC<DataTableProps> = ({ datalist, columns }) => {
   return (
-    <table className="w-90 mx-auto border-collapse mb-20 border-1 border-gray-300">
+    <table className="custom-table mx-auto border-collapse mb-20 border-1 border-gray-300">
       <thead>
         <TableHeading columns={columns} />
       </thead>
