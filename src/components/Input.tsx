@@ -5,6 +5,7 @@ interface InputProps {
   value: string | number;
   className?: string;
   step?: number;
+  disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
@@ -15,6 +16,7 @@ const Input: React.FC<InputProps> = ({
   placeholder = "placeholder text",
   value,
   step,
+  disabled,
   className,
   onChange,
   onKeyDown,
@@ -31,6 +33,7 @@ const Input: React.FC<InputProps> = ({
       placeholder={placeholder}
       value={value}
       step={step}
+      disabled={disabled}
       onChange={onChange}
       onKeyDown={onKeyDown}
     />
