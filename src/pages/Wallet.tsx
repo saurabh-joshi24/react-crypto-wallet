@@ -22,13 +22,17 @@ const Wallet: React.FC = () => {
     setBalance,
     network,
     setNetwork,
+    setAmount,
+    setRecipientAddress,
     amount,
     recipientAddress,
     connected,
     selectedToken,
     setConnected,
     setTokens,
-    tokens
+    tokens,
+    refetchTransaction,
+    setRefetchTransaction,
   } = useWalletContext();
 
   const onWalletConnect = ({ account, balance, network }: walletArgs) => {
@@ -94,20 +98,28 @@ const Wallet: React.FC = () => {
     });
   };
 
+  const onTransactionSuccess =  async(value: boolean) => {
+    setRefetchTransaction(value);
+    setAmount("");
+    setRecipientAddress("");
+  }
+
   const handleTokenTransfer = async (address: string,  type?: string) => {
     if (!Number(amount)) {
       alert("Please enter a valid amount");
     } else if (Number(amount) > Number(balance)) {
       alert("Your account doesn't have enough balance");
     } else {
+      setRefetchTransaction(false);
       if (type === "contract") {
         await handleERC20TokenTransfer({
           tokenAddress: address,
           receiverAddress: recipientAddress,
-          amount
+          amount,
+          onTransactionSuccess
         });
       } else {
-        await handleTransfer({ account: address, recipientAddress, amount });
+        await handleTransfer({ account: address, recipientAddress, amount, onTransactionSuccess });
       }
     }
   };
@@ -132,7 +144,7 @@ const Wallet: React.FC = () => {
                   address={account}
                   handleTokenTransfer={handleTokenTransfer}
                 />
-                <Transactions address={account} />
+                <Transactions address={account} refetchTransaction={refetchTransaction} />
               </>
             )}
           </div>
