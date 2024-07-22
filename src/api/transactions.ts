@@ -1,7 +1,10 @@
 import axios from "axios";
+import { env } from "../env";
+
+const { BASE_URL, API_KEY } = env.ETHERSCAN;
 
 const fetchTransactions = async (address: string | null) => {
-  const API_URL = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
+  const API_URL = `${BASE_URL}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${API_KEY}`;
 
   try {
     const response = await axios.get(API_URL);
