@@ -1,38 +1,51 @@
+import axios from "axios";
+
 export const fetchTokens = async (address: string | null) => {
   try {
     const API_URL = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=txlist&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+
+    // Using Axios to make the API request
+    const response = await axios.get(API_URL);
+
+    if (!response.data || response.data.status !== "1") {
+      throw new Error("Failed to fetch data from API");
     }
 
-    const data = await response.json();
+    const data = response.data.result;
     const uniqueTokens: Array<string> = [];
-    data.result.forEach((tx: any) => {
-      if (tx.contractAddress && uniqueTokens.indexOf(tx.contractAddress) < 0) {
+
+    data.forEach((tx: any) => {
+      if (
+        tx.contractAddress &&
+        uniqueTokens.indexOf(tx.contractAddress) === -1
+      ) {
         uniqueTokens.push(tx.contractAddress);
       }
     });
 
-    const contractDetailsPromises = uniqueTokens.map((token: string, index: number) => fetchContractDetails(token, index));
+    // Create an array of promises to fetch contract details for each token
+    const contractDetailsPromises = uniqueTokens.map(
+      (token: string, index: number) => fetchContractDetails(token, index)
+    );
 
     // fetch each erc20 contract detail
     const result = await Promise.all(contractDetailsPromises);
 
+    // Filter and map the results for each contract address
     const parsedContracts = result
-      .filter((val) => typeof val === "object" && val.tokenName && val.tokenSymbol)
-      .map((val) => {
-        return {
-          balance: val.value,
-          label: val.tokenName,
-          value: val.contractAddress,
-          type: "contract",
-        };
-      });
+      .filter(
+        (val) => typeof val === "object" && val.tokenName && val.tokenSymbol
+      )
+      .map((val) => ({
+        label: val.tokenName,
+        value: val.contractAddress,
+        type: "contract",
+      }));
 
-    return parsedContracts
+    return parsedContracts;
   } catch (error) {
     console.error("Error fetching tokens:", error);
+    throw error;
   }
 };
 
@@ -43,17 +56,23 @@ export const fetchContractDetails = async (
 ) => {
   try {
     const API_URL_TOKEN_TX = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=tokentx&contractaddress=${contractAddress}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
-    await new Promise((resolve) => setTimeout(resolve, index * 1000));
-    const response = await fetch(API_URL_TOKEN_TX);
-    if (!response.ok) {
+
+    // Introduce a delay between requests to avoid rate limiting
+    await new Promise((resolve) => setTimeout(resolve, index * delay));
+
+    const response = await axios.get(API_URL_TOKEN_TX);
+    
+    if (!response.data) {
       throw new Error(`Failed to fetch token details for ${contractAddress}`);
     }
-    const data = await response.json();
 
-    if (data.result.length > 0) {
-      return data.result[0];
+    const data = response.data.result;
+
+    if (data.length > 0) {
+      return data[0];
     }
   } catch (error) {
-    console.error("Error fetching tokens:", error);
+    console.error("Error fetching token details:", error);
+    throw error;
   }
 };
