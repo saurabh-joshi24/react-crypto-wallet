@@ -13,8 +13,12 @@ interface WalletContextType {
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   recipientAddress: string;
   setRecipientAddress: React.Dispatch<React.SetStateAction<string>>;
-  token: string;
-  setToken: React.Dispatch<React.SetStateAction<string>>;
+  selectedToken: string;
+  setSelectedToken: React.Dispatch<React.SetStateAction<string>>;
+  tokens: Array<any>;
+  setTokens: React.Dispatch<React.SetStateAction<Array<{[key: string]: string}>>>;
+
+  
 }
 
 interface WalletProviderProps {
@@ -29,8 +33,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const [network, setNetwork] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [recipientAddress, setRecipientAddress] = useState<string>('');
-  const [token, setToken] = useState<string>('');
+  const [selectedToken, setSelectedToken] = useState<string>('');
   const [connected, setConnected] = useState<boolean>(false);
+  const [tokens, setTokens] = useState<Array<{[key: string]: string}>>([]);
 
   const contextValue: WalletContextType = {
     account,
@@ -43,10 +48,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     setAmount,
     recipientAddress,
     setRecipientAddress,
-    token,
-    setToken,
+    selectedToken, 
+    setSelectedToken,
     connected, 
-    setConnected
+    setConnected,
+    tokens,
+    setTokens
   };
 
   return <WalletContext.Provider value={contextValue}>{children}</WalletContext.Provider>;
