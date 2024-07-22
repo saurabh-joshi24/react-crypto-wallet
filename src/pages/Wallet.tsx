@@ -12,6 +12,7 @@ import {
 } from "../utils/wallet";
 import { useWalletContext } from "../hooks/wallet";
 import { ethers } from "ethers";
+import { handleERC20TokenTransfer } from "../utils/token";
 
 const Wallet: React.FC = () => {
   const {
@@ -25,12 +26,14 @@ const Wallet: React.FC = () => {
     recipientAddress,
     connected,
     setConnected,
+    setTokens,
   } = useWalletContext();
 
   const onWalletConnect = ({ account, balance, network }: walletArgs) => {
     setAccount(account);
     setBalance(balance);
     setNetwork(network);
+    setTokens([{ label: network, balance: balance, value: account }]);
   };
 
   useEffect(() => {
@@ -52,14 +55,16 @@ const Wallet: React.FC = () => {
 
   const handleAccountsChanged = async (accounts: Array<any>) => {
     if (window.ethereum && accounts.length) {
-      setAccount(accounts[0]);
       //@ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       //@ts-ignore
       const balance = await provider.getBalance(accounts[0]);
+      const network = await provider.getNetwork();
+      setAccount(accounts[0]);
       setBalance(ethers.utils.formatEther(balance));
+      setTokens([{ label: network.name, balance: String(balance), value: accounts[0] }])
     } else {
-      window.location.reload()
+      window.location.reload();
     }
   };
 
@@ -72,6 +77,8 @@ const Wallet: React.FC = () => {
       const accounts = await provider.listAccounts();
       const balance = await provider.getBalance(accounts[0]);
       setBalance(ethers.utils.formatEther(balance));
+      //@ts-ignore
+      setTokens([{ label: network.name, balance: String(balance), value: account }])
       setNetwork(network.name);
     }
   };
@@ -85,13 +92,21 @@ const Wallet: React.FC = () => {
     });
   };
 
-  const handleTokenTransfer = async () => {
+  const handleTokenTransfer = async (address: string,  type?: string) => {
     if (!Number(amount)) {
       alert("Please enter a valid amount");
     } else if (Number(amount) > Number(balance)) {
       alert("Your account doesn't have enough balance");
     } else {
-      await handleTransfer({ account, recipientAddress, amount });
+      if (type === "contract") {
+        await handleERC20TokenTransfer({
+          tokenAddress: address,
+          receiverAddress: recipientAddress,
+          amount
+        });
+      } else {
+        await handleTransfer({ account: address, recipientAddress, amount });
+      }
     }
   };
 
@@ -108,8 +123,15 @@ const Wallet: React.FC = () => {
               balance={balance}
               network={network}
             />
-            <TokenTransferPanel handleTokenTransfer={handleTokenTransfer} />
-            {account && <Transactions address={account} />}
+            {account && (
+              <>
+                <TokenTransferPanel
+                  address={account}
+                  handleTokenTransfer={handleTokenTransfer}
+                />
+                <Transactions address={account} />
+              </>
+            )}
           </div>
         )}
       </div>
