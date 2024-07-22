@@ -1,12 +1,12 @@
-import { useWalletContext } from "../hooks/wallet";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import Dropdown from "../components/Dropdown";
-import { fetchTokens } from "../api/tokens";
+import { useWalletContext } from "@/hooks/wallet";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Dropdown from "@/components/Dropdown";
+import { fetchTokens } from "@/api/tokens";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
-import { getTokenBalance } from "../utils/token";
-import { getAccountBalance } from "../utils/wallet";
+import { getTokenBalance } from "@/utils/token";
+import { getAccountBalance } from "@/utils/wallet";
 
 interface TokenTransferPanelProps {
   address: string | null;
