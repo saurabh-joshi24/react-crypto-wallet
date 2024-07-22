@@ -1,6 +1,6 @@
 import "./App.css";
-import Wallet from "./pages/Wallet";
-import { WalletProvider } from "./context/Wallet";
+import Wallet from "@/pages/Wallet";
+import { WalletProvider } from "@/context/Wallet";
 
 function App() {
   return (
