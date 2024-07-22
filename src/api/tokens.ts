@@ -42,6 +42,7 @@ export const fetchTokens = async (address: string | null) => {
       .map((val) => ({
         label: val.tokenName,
         value: val.contractAddress,
+        symbol: val.tokenSymbol,
         type: "contract",
       }));
 
