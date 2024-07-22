@@ -1,8 +1,11 @@
 import axios from "axios";
+import { env } from "../env";
+
+const { BASE_URL, API_KEY } = env.ETHERSCAN;
 
 export const fetchTokens = async (address: string | null) => {
   try {
-    const API_URL = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=txlist&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
+    const API_URL = `${BASE_URL}?module=account&action=txlist&address=${address}&apikey=${API_KEY}`;
 
     // Using Axios to make the API request
     const response = await axios.get(API_URL);
@@ -55,13 +58,13 @@ export const fetchContractDetails = async (
   delay = 1000
 ) => {
   try {
-    const API_URL_TOKEN_TX = `${process.env.REACT_APP_ETHERSCAN_API_BASE_URL}?module=account&action=tokentx&contractaddress=${contractAddress}&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`;
+    const API_URL_TOKEN_TX = `${BASE_URL}?module=account&action=tokentx&contractaddress=${contractAddress}&apikey=${API_KEY}`;
 
     // Introduce a delay between requests to avoid rate limiting
     await new Promise((resolve) => setTimeout(resolve, index * delay));
 
     const response = await axios.get(API_URL_TOKEN_TX);
-    
+
     if (!response.data) {
       throw new Error(`Failed to fetch token details for ${contractAddress}`);
     }
