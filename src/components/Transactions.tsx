@@ -11,22 +11,30 @@ import Pagination from "./Pagination";
 
 interface transactionProps {
   address: string | null;
+  refetchTransaction: boolean;
 }
 
-const Transactions: React.FC<transactionProps> = ({ address }) => {
+const Transactions: React.FC<transactionProps> = ({ address, refetchTransaction }) => {
   const [paginationData, setPaginationData] = useState({...INITIAL_PAGINATION_DATA });
   const [totalPages, setTotalPages] = useState<number>(0)
   const { itemsPerPage, indexOfFirstItem, indexOfLastItem } = paginationData;
 
-  const { data, isError, isPending, isSuccess } = useQuery({
+  const { data, isError, isPending, isSuccess, refetch } = useQuery({
     queryKey: ["transactions", address],
     queryFn: () => fetchTransactions(address),
+    refetchInterval: 10000, // Refetch data every 10 seconds
   });
 
   useEffect(() => {
     setPaginationData(INITIAL_PAGINATION_DATA);
     setTotalPages(0);
   }, [address])
+
+  useEffect(() => {
+    if (refetchTransaction) {
+      refetch();
+    }
+  }, [refetchTransaction]);
 
   useEffect(() => {
     // if api call is success then pagination data
