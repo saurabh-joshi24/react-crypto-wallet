@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import TOKENABI from "../tokenContractABI.json";
+import TOKENABI from "@/tokenContractABI.json";
 
 interface tokenTransferArgs {
   tokenAddress: string;

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import DataTable from "./Table";
-import { TRANSACTION_COLUMNS } from "../constants/transaction";
+import { TRANSACTION_COLUMNS } from "@/constants/transaction";
 import {
   INITIAL_PAGINATION_DATA,
   PaginationType,
-} from "../constants/pagination";
+} from "@/constants/pagination";
 import { useQuery } from "@tanstack/react-query";
-import fetchTransactions from "../api/transactions";
+import fetchTransactions from "@/api/transactions";
 import Pagination from "./Pagination";
 
 interface transactionProps {

@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { calculateTransactionFee, clipAddress } from "../utils/transaction";
+import { calculateTransactionFee, clipAddress } from "@/utils/transaction";
 
 const TRANSACTION_COLUMNS = [
   { header: "Transaction Hash", cell: (item: any) => clipAddress(item.hash) },

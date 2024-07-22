@@ -1,18 +1,18 @@
 import { useEffect } from "react";
-import Header from "../components/Header";
-import Button from "../components/Button";
-import AccountInfo from "../components/AccountInfo";
-import Transactions from "../components/Transactions";
-import TokenTransferPanel from "../components/TokenTransferPanel";
+import Header from "@/components/Header";
+import Button from "@/components/Button";
+import AccountInfo from "@/components/AccountInfo";
+import Transactions from "@/components/Transactions";
+import TokenTransferPanel from "@/components/TokenTransferPanel";
 import {
   walletArgs,
   connectWallet,
   handleTransfer,
   checkWalletConnection,
-} from "../utils/wallet";
-import { useWalletContext } from "../hooks/wallet";
+} from "@/utils/wallet";
+import { useWalletContext } from "@/hooks/wallet";
 import { ethers } from "ethers";
-import { handleERC20TokenTransfer } from "../utils/token";
+import { handleERC20TokenTransfer } from "@/utils/token";
 
 const Wallet: React.FC = () => {
   const {

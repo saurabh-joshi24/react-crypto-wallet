@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { PageNumbers } from "./PageNumbers";
-import { PaginationType } from "../../constants/pagination";
+import { PaginationType } from "@/constants/pagination";
 import Input from "../Input";
 
 interface PaginationProps {
