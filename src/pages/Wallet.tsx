@@ -25,8 +25,10 @@ const Wallet: React.FC = () => {
     amount,
     recipientAddress,
     connected,
+    selectedToken,
     setConnected,
     setTokens,
+    tokens
   } = useWalletContext();
 
   const onWalletConnect = ({ account, balance, network }: walletArgs) => {
@@ -38,7 +40,7 @@ const Wallet: React.FC = () => {
 
   useEffect(() => {
     // Check if wallet is already connected on initial loading if yes then connect
-    checkWalletConnection(async (isConnected) => {
+    checkWalletConnection(async (isConnected: boolean) => {
       setConnected(isConnected);
       if (isConnected) {
         handleWalletConnection();
@@ -122,6 +124,7 @@ const Wallet: React.FC = () => {
               account={account}
               balance={balance}
               network={network}
+              tokenSymbol={selectedToken && tokens ? tokens.filter(item => selectedToken === item.value)[0]?.symbol: "ETH"}
             />
             {account && (
               <>
