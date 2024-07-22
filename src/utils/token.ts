@@ -1,16 +1,18 @@
 import Web3 from "web3";
-import TOKENABI from "../abi.json";
+import TOKENABI from "../tokenContractABI.json";
 
 interface tokenTransferArgs {
   tokenAddress: string;
   receiverAddress: string | null;
   amount: string;
+  onTransactionSuccess?: (value: boolean) => void 
 }
 
 export const handleERC20TokenTransfer = async ({
   tokenAddress,
   receiverAddress,
   amount,
+  onTransactionSuccess
 }: tokenTransferArgs) => {
   try {
     if (window.ethereum) {
@@ -30,6 +32,9 @@ export const handleERC20TokenTransfer = async ({
           console.log("hash", hash);
         })
         .on("receipt", (receipt) => {
+          if (onTransactionSuccess) {
+             onTransactionSuccess(true)
+          }
           console.log("receipt", receipt);
         });
     }
@@ -54,7 +59,7 @@ export const getTokenBalance = async(contractAddress: string, accountAddress: st
       }
     }
   } catch (error) {
-    console.error("Error transferring tokens:", error);
+    console.error("Error fetching balance:", error);
     return "";
   }
 };

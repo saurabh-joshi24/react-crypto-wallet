@@ -10,8 +10,7 @@ interface transferArgs {
   account: string | null;
   recipientAddress: string;
   amount: string;
-  onSuccess?: () => void;
-  onFailure?: () => void;
+  onTransactionSuccess?: (value: boolean) => void 
 }
 
 type onWalletConnect = (walletArgs: walletArgs) => void;
@@ -55,7 +54,7 @@ const connectWallet = async ({
 };
 
 const handleTransfer = async (transferArgs: transferArgs) => {
-  const { account, recipientAddress, amount } = transferArgs;
+  const { account, recipientAddress, amount , onTransactionSuccess } = transferArgs;
 
   if (!account || !recipientAddress || !amount) return;
   // @ts-ignore
@@ -71,6 +70,9 @@ const handleTransfer = async (transferArgs: transferArgs) => {
   try {
     const transaction = await signer.sendTransaction(tx);
     await transaction.wait();
+    if (onTransactionSuccess) {
+     onTransactionSuccess(true)
+    }
     alert("Transaction successful!");
   } catch (error) {
     console.error("Transaction failed:", error);
@@ -96,4 +98,24 @@ const checkWalletConnection = async (callback: (value: boolean) => void) => {
   }
 };
 
-export { handleTransfer, connectWallet, checkWalletConnection };
+const getAccountBalance = async () => {
+  try {
+    if (window && window.ethereum) {
+      // @ts-ignore
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+      const balance = await provider.getBalance(accounts[0]);
+      
+      if (balance) {
+        return ethers.utils.formatEther(balance);
+      } else {
+        throw new Error("Unable to fetch balance");
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+    return "";
+  }
+};
+
+export { handleTransfer, connectWallet, checkWalletConnection, getAccountBalance };
